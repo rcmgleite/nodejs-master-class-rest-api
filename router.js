@@ -11,9 +11,12 @@ class Router {
     this.handler = this.handler.bind(this)
 
     this._handlers = { 
-     __not_found__: (data, callback) => {
+      __not_found__: (data, callback) => {
         return callback(404, {msg: `can not ${data.method} on ${data.route}`})
       },
+      __not_implemented__: (data, callback) => {
+        return callback(501, {msg: `${data.method} not implemented`})
+      }
     }
     this._handlers[GET] = {}
     this._handlers[POST] = {}
@@ -47,6 +50,10 @@ class Router {
    */
   handler(route, method) {
     method = method.toLowerCase()
+    if (this._handlers[method] === undefined) {
+      return this._handlers.__not_implemented__
+    }
+
     let h = this._handlers[method][route]
     if (h === undefined) {
       console.log(`not found: ${route}`)
