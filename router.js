@@ -1,3 +1,5 @@
+const defaultHandlers = require('./default_handlers')
+
 const GET = 'get'
 const POST = 'post'
 
@@ -10,14 +12,12 @@ class Router {
     this.post = this.post.bind(this)
     this.handler = this.handler.bind(this)
 
-    this._handlers = { 
-      __not_found__: (data, callback) => {
-        return callback(404, {msg: `can not ${data.method} on ${data.route}`})
-      },
-      __not_implemented__: (data, callback) => {
-        return callback(501, {msg: `${data.method} not implemented`})
-      }
-    }
+    this._handlers = { }
+
+    Object.keys(defaultHandlers).forEach((key) => {
+      this._handlers[key] = defaultHandlers[key]
+    })
+
     this._handlers[GET] = {}
     this._handlers[POST] = {}
   }
@@ -39,7 +39,7 @@ class Router {
    *  @param {function} handler - handler to be executed when the given route is requested
    */
   post(route, handler) {
-    this.handlers[POST][route] = handler
+    this._handlers[POST][route] = handler
   }
 
   /*

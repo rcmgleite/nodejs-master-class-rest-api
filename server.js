@@ -31,26 +31,37 @@ class Server {
       buffer += decoder.write(data)
     })
 
-    req.on('end', () => {
-      buffer += decoder.end()
+    req.on('end', async () => {
+      try {
+        buffer += decoder.end()
+        const request = new Request({ 
+          route: route,
+          queryString: queryString,
+          method: req.method,
+          headers, headers,
+          payload: buffer
+        })
 
-      const data = { 
-        route: route,
-        queryString: queryString,
-        method: req.method,
-        headers, headers,
-        payload: buffer
+        let handler = this._router.handler(route, req.method)
+          const response = await handler(request)
+          let statusCode = response.StatusCode()
+          let payload = response.Payload()
+          console.log('aaaaa')
+
+          statusCode = typeof(statusCode) == 'number' ? statusCode : 200
+          payload = typeof(payload) == 'object' ? payload : {}
+          
+          res.setHeader('Content-Type', 'application/json')
+          res.writeHead(statusCode)
+          res.end(JSON.stringify(payload))
+      } catch (err) {
+        console.dir(err)
+        res.writeHead(500)
+        res.end(JSON.stringify({
+          err: err,
+          msg: 'internal server error'
+        }))
       }
-
-      let handler = this._router.handler(route, req.method)
-      return handler(data, (statusCode, payload) => {
-        statusCode = typeof(statusCode) == 'number' ? statusCode : 200
-        payload = typeof(payload) == 'object' ? payload : {}
-        
-        res.setHeader('Content-Type', 'application/json')
-        res.writeHead(statusCode)
-        res.end(JSON.stringify(payload))
-      })
     })
   }
 
@@ -84,7 +95,40 @@ class HttpsServer extends Server{
   }
 }
 
+class Request {
+  constructor(args) {
+    this._route = args.route
+    this._queryString = args.queryString
+    this._method = args.method
+    this._headers = args.headers
+    this._payload = JSON.parse(args.payload)
+  }
+
+  route() { return this._route }
+  queryString() { return this._queryString }
+  method() { return this._method }
+  headers() { return this._headers }
+  payload() { return this._payload }
+}
+
+class Response {
+  constructor(args) { 
+    this._statusCode = args.statusCode
+    this._payload = args.payload
+  }
+
+  StatusCode() {
+    return this._statusCode
+  }
+
+  Payload() {
+    return this._payload
+  }
+}
+
 module.exports = {
   HttpServer,
-  HttpsServer
+  HttpsServer,
+  Request,
+  Response
 }

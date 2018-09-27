@@ -10,6 +10,7 @@ const handlers = require('./handlers')
 const router = new Router()
 router.get('ping', handlers.ping)
 router.get('hello', handlers.hello)
+router.post('somethingAsync', handlers.somethingAsync)
 
 // Create the servers
 const httpServer = new Server.HttpServer(router)
