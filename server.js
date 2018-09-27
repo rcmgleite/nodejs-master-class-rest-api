@@ -98,6 +98,10 @@ class HttpsServer extends Server{
   }
 }
 
+/*
+ * Request represents an http request that all api handlers
+ *  receive as parameter
+ */
 class Request {
   constructor(args) {
     this._route = args.route
@@ -114,6 +118,11 @@ class Request {
   payload() { return this._payload }
 }
 
+/*
+ * Response represents an HTTP response.
+ * All API handlers must return an instance of this class
+ * (or a promise that unwrapps to an instance of it)
+ */
 class Response {
   constructor(args) { 
     this._statusCode = args.statusCode
