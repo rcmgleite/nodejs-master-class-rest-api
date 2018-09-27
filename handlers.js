@@ -16,17 +16,6 @@ async function notFound(request) {
 }
 
 /*
- *  notImplemented is called when a client issues a HTTP request with 
- *   a verb not supported
- */
-async function notImplemented(request) {
-  return new Server.Response({
-    statusCode: 501,
-    payload: {msg: `${request.method()} not implemented`}
-  })
-}
-
-/*
  *  Simple ping handler
  */
 async function ping(request) {
@@ -66,7 +55,6 @@ async function somethingAsync(request) {
 
 module.exports = {
   notFound,
-  notImplemented,
   ping,
   hello,
   somethingAsync

@@ -1,7 +1,6 @@
 const GET = 'get'
 const POST = 'post'
 const NOT_FOUND = '__not_found__'
-const NOT_IMPLEMENTED = '__not_implemented__'
 
 /**
   * Router is the class responsible for storing all API routes.
@@ -19,10 +18,6 @@ class Router {
 
   registerNotFound(handler) {
     this._handlers[NOT_FOUND] = handler
-  }
-
-  registerNotImplemented(handler) {
-    this._handlers[NOT_IMPLEMENTED] = handler 
   }
 
   /*
@@ -53,17 +48,11 @@ class Router {
    */
   handler(route, method) {
     method = method.toLowerCase()
-    if (this._handlers[method] === undefined) {
-      return this._handlers[NOT_IMPLEMENTED]
+    if (this._handlers[method] !== undefined && this._handlers[method][route] !== undefined) {
+      return this._handlers[method][route]
     }
 
-    let h = this._handlers[method][route]
-    if (h === undefined) {
-      console.log(`not found: ${route}`)
-      h = this._handlers[NOT_FOUND]
-    }
-
-    return h
+    return this._handlers[NOT_FOUND] 
   }
 }
 

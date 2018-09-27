@@ -9,7 +9,6 @@ const handlers = require('./handlers')
 // Create a new router and register all routes
 const router = new Router()
 router.registerNotFound(handlers.notFound)
-router.registerNotImplemented(handlers.notImplemented)
 router.get('ping', handlers.ping)
 router.get('hello', handlers.hello)
 router.post('somethingAsync', handlers.somethingAsync)
