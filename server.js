@@ -46,7 +46,6 @@ class Server {
           const response = await handler(request)
           let statusCode = response.StatusCode()
           let payload = response.Payload()
-          console.log('aaaaa')
 
           statusCode = typeof(statusCode) == 'number' ? statusCode : 200
           payload = typeof(payload) == 'object' ? payload : {}

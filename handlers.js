@@ -19,7 +19,6 @@ async function hello(request) {
 
 async function somethingAsync(request) {
   return new Promise((resolve) => {
-    console.log(request.payload())
     const sleepFor = request.payload().sleepFor || 1000
     setTimeout(() => {
       return resolve(new Server.Response({
