@@ -14,11 +14,15 @@ class Server {
    */
   constructor(router) {
     this._router = router
-    this.defaultHandler = this.defaultHandler.bind(this)
+    this.route = this.route.bind(this)
     this.listen = this.listen.bind(this)
   }
 
-  defaultHandler(req, res) {
+  /*
+   *  route is the method responsible for routing the received request to
+   *   the appropriate handler
+   */
+  route(req, res) {
     const parsedURL = url.parse(req.url, true)
     const route = parsedURL.pathname.replace(/^\/+|\/+$/g, '')
 
@@ -75,7 +79,7 @@ class Server {
 class HttpServer extends Server {
   constructor(router) {
     super(router)
-    this._server = http.createServer(this.defaultHandler)
+    this._server = http.createServer(this.route)
   }
 }
 
@@ -90,7 +94,7 @@ class HttpsServer extends Server{
       cert: fs.readFileSync(httpsCertPath),
     }
 
-    this._server = https.createServer(httpsOpts, this.defaultHandler)
+    this._server = https.createServer(httpsOpts, this.route)
   }
 }
 
@@ -100,7 +104,7 @@ class Request {
     this._queryString = args.queryString
     this._method = args.method
     this._headers = args.headers
-    this._payload = JSON.parse(args.payload)
+    this._payload = JSON.parse(args.payload || '{}')
   }
 
   route() { return this._route }

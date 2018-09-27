@@ -1,7 +1,7 @@
-const defaultHandlers = require('./default_handlers')
-
 const GET = 'get'
 const POST = 'post'
+const NOT_FOUND = '__not_found__'
+const NOT_IMPLEMENTED = '__not_implemented__'
 
 /**
   * Router is the class responsible for storing all API routes.
@@ -13,13 +13,16 @@ class Router {
     this.handler = this.handler.bind(this)
 
     this._handlers = { }
-
-    Object.keys(defaultHandlers).forEach((key) => {
-      this._handlers[key] = defaultHandlers[key]
-    })
-
     this._handlers[GET] = {}
     this._handlers[POST] = {}
+  }
+
+  registerNotFound(handler) {
+    this._handlers[NOT_FOUND] = handler
+  }
+
+  registerNotImplemented(handler) {
+    this._handlers[NOT_IMPLEMENTED] = handler 
   }
 
   /*
@@ -51,13 +54,13 @@ class Router {
   handler(route, method) {
     method = method.toLowerCase()
     if (this._handlers[method] === undefined) {
-      return this._handlers.__not_implemented__
+      return this._handlers[NOT_IMPLEMENTED]
     }
 
     let h = this._handlers[method][route]
     if (h === undefined) {
       console.log(`not found: ${route}`)
-      h = this._handlers.__not_found__
+      h = this._handlers[NOT_FOUND]
     }
 
     return h
