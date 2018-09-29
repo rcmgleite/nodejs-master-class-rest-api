@@ -1,9 +1,4 @@
-/*
- * This file contains all API handlers.
- * The handlers must return a promise.
- * Also, they only receive one parameter of type ServerRequest.
- */
-const Server = require('./server')
+const Server = require('../server')
 
 /*
  *  notFound is called when the client tries to access a path that do not exist

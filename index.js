@@ -4,14 +4,20 @@
 const Server = require('./server')
 const config = require('./config')
 const Router = require('./router')
-const handlers = require('./handlers')
+const defaultController = require('./controllers/default')
+const usersController = require('./controllers/users')
 
 // Create a new router and register all routes
 const router = new Router()
-router.registerNotFound(handlers.notFound)
-router.get('ping', handlers.ping)
-router.get('hello', handlers.hello)
-router.post('somethingAsync', handlers.somethingAsync)
+
+// default routes
+router.registerNotFound(defaultController.notFound)
+router.get('ping', defaultController.ping)
+router.get('hello', defaultController.hello)
+router.post('somethingAsync', defaultController.somethingAsync)
+
+// users routes
+router.post('user', usersController.create)
 
 // Create the servers
 const httpServer = new Server.HttpServer(router)
