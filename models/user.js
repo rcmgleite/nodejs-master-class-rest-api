@@ -8,12 +8,40 @@ const utils = require('../utils')
  */
 class User {
   constructor(args) {
+    if (!args) {
+      return
+    }
+
+    this.populate(args)
+  }
+
+  /*
+   * populate constructs the User properties validating its fields
+   *  during the process.
+   *
+   * If any validation fails, an exception is thrown.
+   *
+   * @param args {object} - object with the users mandatory properties
+   */
+  populate(args) {
     this.firstName = args.firstName || args._firstName
     this.lastName = args.lastName || args._lastName
     this.phone = args.phone || args._phone
     this.salt = args.salt || args._salt
     this.password = args.password || args._password
     this.tosAgreement = args.tosAgreement || args._tosAgreement
+  }
+
+   /*
+   * public returns an object containing only the user public
+   *  information
+   */
+  public() {
+    return {
+      firstName: this.firstName,
+      lastName: this.lastName,
+      phone: this.phone
+    }
   }
 
   set firstName(firstName) {

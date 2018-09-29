@@ -17,6 +17,7 @@ router.get('hello', defaultController.hello)
 router.post('somethingAsync', defaultController.somethingAsync)
 
 // users routes
+router.get('user', usersController.get)
 router.post('user', usersController.create)
 
 // Create the servers

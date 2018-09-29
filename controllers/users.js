@@ -58,6 +58,34 @@ async function create(request) {
   }
 }
 
+/*
+ * get retreives a user based on the 'phone' querystring parameter
+ * FIXME - when a validation error occurs, the statusCode should be 400, not 500
+ */
+async function get(request) {
+  let userPhone = ''
+  try {
+    const user = new User()
+    user.phone = request.queryString().phone
+    const userData = await datastore.read('users', user.phone)
+    user.populate(userData)
+    return new Server.Response({
+      statusCode: 200,
+      payload: user.public()
+    })
+  } catch(err) {
+    console.dir(err)
+    return new Server.Response({
+      statusCode: 500,
+      payload: {
+        msg: `Failed to get user with phone ${userPhone}`,
+        err: `${err.name} - ${err.message}`,
+      }
+    })
+  }
+}
+
 module.exports = {
-  create
+  create,
+  get
 }
