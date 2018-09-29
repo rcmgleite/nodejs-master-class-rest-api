@@ -1,7 +1,7 @@
 const Server = require('../server')
 const lib = require('../lib')
-const utils = require('../utils')
 // FIXME - pass datastore as controller method parameter
+const User = require('../models/user')
 const datastore = new lib.Datastore('./.data')
 
 /*
@@ -28,13 +28,11 @@ async function playerExists(phone) {
  * to the client.
  * If any error occur, this controller returns 500 to the client
  * Otherwise, return 200
- *
- * TODO: validate user input
  */
 async function create(request) {
-  const payload = request.payload()
   try {
-    const exists = await playerExists(payload.phone)
+    const user = new User(request.payload())
+    const exists = await playerExists(user.phone)
     if (exists) {
       return new Server.Response({
         statusCode: 400,
@@ -44,9 +42,7 @@ async function create(request) {
       })    
     }
 
-    payload.salt = 'whatasalt' // TODO generate random salt
-    payload.password = utils.hash(`${payload.password}${payload.salt}`)
-    await datastore.upsert('users', payload.phone, payload)
+    await datastore.upsert('users', user.phone, user)
     return new Server.Response({
       statusCode: 200,
     })
@@ -56,7 +52,7 @@ async function create(request) {
       statusCode: 500,
       payload: {
         msg: `Failed to save user`,
-        err: err,
+        err: `${err.name} - ${err.message}`,
       }
     })
   }
