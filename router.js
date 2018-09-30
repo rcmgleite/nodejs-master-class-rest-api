@@ -1,5 +1,7 @@
 const GET = 'get'
 const POST = 'post'
+const PUT = 'put'
+const DELETE = 'delete'
 const NOT_FOUND = '__not_found__'
 
 /**
@@ -14,6 +16,8 @@ class Router {
     this._handlers = { }
     this._handlers[GET] = {}
     this._handlers[POST] = {}
+    this._handlers[PUT] = {}
+    this._handlers[DELETE] = {}
   }
 
   registerNotFound(handler) {
@@ -38,6 +42,26 @@ class Router {
    */
   post(route, handler) {
     this._handlers[POST][route] = handler
+  }
+
+  /*
+   *  put register a new handler for the PUT HTTP verb
+   *
+   *  @param {string} route - request route that will trigger the given handler when called
+   *  @param {function} handler - handler to be executed when the given route is requested
+   */
+  put(route, handler) {
+    this._handlers[PUT][route] = handler
+  }
+
+  /*
+   *  delete register a new handler for the DELETE HTTP verb
+   *
+   *  @param {string} route - request route that will trigger the given handler when called
+   *  @param {function} handler - handler to be executed when the given route is requested
+   */
+  delete(route, handler) {
+    this._handlers[DELETE][route] = handler
   }
 
   /*

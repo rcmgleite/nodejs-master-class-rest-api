@@ -63,7 +63,6 @@ async function create(request) {
  * FIXME - when a validation error occurs, the statusCode should be 400, not 500
  */
 async function get(request) {
-  let userPhone = ''
   try {
     const user = new User()
     user.phone = request.queryString().phone
@@ -78,7 +77,37 @@ async function get(request) {
     return new Server.Response({
       statusCode: 500,
       payload: {
-        msg: `Failed to get user with phone ${userPhone}`,
+        msg: `Failed to get user`,
+        err: `${err.name} - ${err.message}`,
+      }
+    })
+  }
+}
+
+/*
+ * update updates a given user based on the request payload
+ */
+async function update(request) {
+  // TODO
+}
+
+/*
+ * delete deletes a given user based on the given phone
+ */
+async function delete() {
+  try {
+    const user = new User()
+    user.phone = request.queryString().phone
+    await datastore.delete('users', user.phone)
+    return new Server.Response({
+      statusCode: 200
+    })
+  } catch(err) {
+    console.dir(err)
+    return new Server.Response({
+      statusCode: 500,
+      payload: {
+        msg: `Failed to delete user`,
         err: `${err.name} - ${err.message}`,
       }
     })
@@ -87,5 +116,7 @@ async function get(request) {
 
 module.exports = {
   create,
-  get
+  get,
+  update,
+  delete
 }

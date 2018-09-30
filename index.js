@@ -19,6 +19,8 @@ router.post('somethingAsync', defaultController.somethingAsync)
 // users routes
 router.get('user', usersController.get)
 router.post('user', usersController.create)
+router.put('user', usersController.update)
+router.delete('user', usersController.delete)
 
 // Create the servers
 const httpServer = new Server.HttpServer(router)
