@@ -93,8 +93,11 @@ async function update(request) {
 
 /*
  * delete deletes a given user based on the given phone
+ *
+ * ** As delete is a reserved word, the '_' char as method name prefix is needed
+ *  this would not be needed if it was a class method or an object field
  */
-async function delete() {
+async function _delete(request) {
   try {
     const user = new User()
     user.phone = request.queryString().phone
@@ -118,5 +121,5 @@ module.exports = {
   create,
   get,
   update,
-  delete
+  delete: _delete,
 }
