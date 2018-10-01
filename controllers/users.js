@@ -28,10 +28,14 @@ async function playerExists(phone) {
  * to the client.
  * If any error occur, this controller returns 500 to the client
  * Otherwise, return 200
+ *
+ * FIXME - all handlers have a try/catch block with the same scope as the handler itself
+ *  how to do better than that?
  */
 async function create(request) {
   try {
     const user = new User(request.payload())
+    user.hashPassword()
     const exists = await playerExists(user.phone)
     if (exists) {
       return new Server.Response({
@@ -88,7 +92,37 @@ async function get(request) {
  * update updates a given user based on the request payload
  */
 async function update(request) {
-  // TODO
+  try {
+    const user = new User()
+    user.phone = request.payload().phone
+    const userData = await datastore.read('users', user.phone)
+    user.populate(userData)
+
+    const payload = request.payload()
+    user.firstName = payload.firstName || user.firstName
+    user.lastName = payload.lastName || user.lastName
+
+    if (payload.password) {
+      user.password = payload.password 
+      user.hashPassword()
+    }
+
+    await datastore.upsert('users', user.phone, user)
+
+    return new Server.Response({
+      statusCode: 200,
+      payload: user.public(),
+    })
+  } catch(err) {
+    console.dir(err)
+    return new Server.Response({
+      statusCode: 500,
+      payload: {
+        msg: `Failed to get user`,
+        err: `${err.name} - ${err.message}`,
+      }
+    })
+  }
 }
 
 /*

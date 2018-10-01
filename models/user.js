@@ -5,6 +5,7 @@ const utils = require('../utils')
  * and provides getters and setters for each property
  *
  * FIXME - the validation could be extracted to a library
+ * FIXME - the current validation uses exceptions.. this is probably not a good idea
  */
 class User {
   constructor(args) {
@@ -85,14 +86,12 @@ class User {
       throw new Error(`password must be non empty string`)
     }
 
-    if (this._salt !== undefined) {
-      this._password = password
-      return
-    } 
+    this._password = password
+  }
 
-    const salt = 'whatasalt' // TODO generate random salt
-    const hashedPassword = utils.hash(`${password}${salt}`)
-    this.salt = salt
+  hashPassword() {
+    this._salt = 'whatasalt' // TODO generate random salt
+    const hashedPassword = utils.hash(`${this._password}${this._salt}`)
     this._password = hashedPassword
   }
 

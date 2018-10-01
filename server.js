@@ -48,8 +48,8 @@ class Server {
 
         let handler = this._router.handler(route, req.method)
           const response = await handler(request)
-          let statusCode = response.StatusCode()
-          let payload = response.Payload()
+          let statusCode = response.statusCode()
+          let payload = response.payload()
 
           statusCode = typeof(statusCode) == 'number' ? statusCode : 200
           payload = typeof(payload) == 'object' ? payload : {}
@@ -129,11 +129,11 @@ class Response {
     this._payload = args.payload
   }
 
-  StatusCode() {
+  statusCode() {
     return this._statusCode
   }
 
-  Payload() {
+  payload() {
     return this._payload
   }
 }
